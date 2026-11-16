@@ -19,6 +19,15 @@
 
         <form method="post" asp-controller="Account" asp-action="Login">
 
+            @Html.AntiForgeryToken()
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">
+                    @ViewBag.Error
+                </div>
+            }
+
             <!-- User Type -->
             <label for="userType">Login As</label>
 
