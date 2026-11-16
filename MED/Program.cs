@@ -1,3 +1,6 @@
+using MED.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 namespace MED
 {
     public class Program
@@ -8,6 +11,20 @@ namespace MED
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddSingleton<MedStore>();
+
+            builder.Services
+            .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath = "/Home/Index";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.ExpireTimeSpan = TimeSpan.FromHours(2);
+            });
+
+            builder.Services.AddAuthorization();
 
             var app = builder.Build();
 
@@ -20,8 +37,10 @@ namespace MED
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();

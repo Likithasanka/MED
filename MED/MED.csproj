@@ -18,7 +18,6 @@
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="ViewModels\" />
-    <Folder Include="Services\" />
     <Folder Include="Views\Account\" />
     <Folder Include="Views\Comments\" />
     <Folder Include="Views\Findings\" />
