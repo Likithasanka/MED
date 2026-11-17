@@ -1,0 +1,53 @@
+﻿@model Notice
+
+@{
+    ViewData["Title"] = "Notice Details";
+}
+
+<h2>@Model.Title</h2>
+
+<p>
+    <strong>Device:</strong>
+    @Model.Device
+</p>
+
+<p>
+    <strong>Type:</strong>
+    @Model.Type
+</p>
+
+<p>
+    <strong>Date:</strong>
+    @Model.Date.ToString("yyyy-MM-dd")
+</p>
+
+<p>
+    @Model.Description
+</p>
+
+<form asp-action="Add" method="post">
+
+    @Html.AntiForgeryToken()
+
+    <input type="hidden"
+           name="noticeId"
+           value="@Model.Id" />
+
+    <label>Risk review / group title</label>
+
+    <input name="reviewTitle"
+           required
+           maxlength="100"
+           class="form-control mb-2"
+           placeholder="e.g. Pump Risk Review" />
+
+    <button class="btn btn-primary">
+        Select Notice
+    </button>
+
+</form>
+
+<a asp-controller="Notices"
+   asp-action="Index">
+    Back to Search
+</a>
