@@ -3,3 +3,4 @@ obj/
 *.db
 .vs/
 *.user
+/App_Data/med-data.json
