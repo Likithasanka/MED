@@ -1,0 +1,20 @@
+﻿@model List<CustomerComment>
+
+@{
+    ViewData["Title"] = "Customer Comments";
+}
+
+<h2>Customer Feedback</h2>
+
+@foreach (var c in Model)
+{
+    <div class="card mb-2">
+        <div class="card-body">
+            @c.Text
+
+            <small>
+                @c.CreatedAt.ToLocalTime()
+            </small>
+        </div>
+    </div>
+}
