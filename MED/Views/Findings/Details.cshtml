@@ -1,0 +1,48 @@
+﻿@model Finding
+
+@inject MED.Services.MedStore Store
+
+@{
+    ViewData["Title"] = "Finding Details";
+    var review = Store.Read(d => d.Reviews.FirstOrDefault(r => r.Id == Model.ReviewId));
+    var notices = Store.Read(d => d.Notices.ToList());
+    var comments = Store.Read(d => d.NoticeComments.Where(c => c.EmployeeId == Model.EmployeeId).ToList());
+}
+
+<h2>@Model.Title</h2>
+
+<p>@Model.Summary</p>
+
+<h4>Related Notices</h4>
+
+@if (review != null)
+{
+    @foreach (var id in review.NoticeIds)
+    {
+        var n = notices.FirstOrDefault(x => x.Id == id);
+
+        if (n != null)
+        {
+            <div class="card mb-2">
+                <div class="card-body">
+                    <strong>@n.Title</strong>
+
+                    <p>@n.Device | @n.Type | @n.Date.ToString("yyyy-MM-dd")</p>
+
+                    <p>@n.Description</p>
+
+                    @foreach (var c in comments.Where(x => x.NoticeId == id))
+                    {
+                        <p>Employee comment: @c.Text</p>
+                    }
+                </div>
+            </div>
+        }
+    }
+}
+
+<a asp-controller="Sharing" asp-action="Index" asp-route-findingId="@Model.Id" class="btn btn-primary">Share with Customer</a>
+
+<a asp-controller="Management" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Edit Finding</a>
+
+<a asp-controller="Feedback" asp-action="Index" asp-route-findingId="@Model.Id" class="btn btn-outline-info">Customer Feedback</a>
