@@ -1,0 +1,39 @@
+﻿@model List<NoticeComment>
+
+@{
+    var notice = (Notice)ViewBag.Notice;
+    ViewData["Title"] = "Notice Comments";
+}
+
+<h2>Comments: @notice.Title</h2>
+
+<form asp-action="Add" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" name="noticeId" value="@notice.Id" />
+
+    <textarea name="text" required maxlength="1000" class="form-control mb-2"></textarea>
+
+    <button class="btn btn-primary">Save Comment</button>
+</form>
+
+@foreach (var c in Model)
+{
+    <div class="card my-2">
+        <div class="card-body">
+            @c.Text
+
+            <form asp-controller="Management" asp-action="EditComment" method="post" class="mt-2">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="commentId" value="@c.Id" />
+
+                <input name="text" value="@c.Text" maxlength="1000" required class="form-control mb-1" />
+
+                <button class="btn btn-sm btn-outline-secondary">Update Comment</button>
+            </form>
+
+            <small class="text-muted">@c.CreatedAt.ToLocalTime()</small>
+        </div>
+    </div>
+}
