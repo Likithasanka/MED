@@ -1,0 +1,80 @@
+﻿@model List<Notice>
+
+@{
+    ViewData["Title"] = "Search Notices";
+}
+
+<h2>Search Safety & Recall Notices</h2>
+
+<form method="get" class="row g-2 mb-3">
+
+    <div class="col-md-6">
+
+        <input name="keyword"
+               value="@ViewBag.Keyword"
+               class="form-control"
+               placeholder="Search title, device or description" />
+
+    </div>
+
+    <div class="col-md-3">
+
+        <select name="type" class="form-select">
+
+            <option value="">
+                All types
+            </option>
+
+            <option value="Safety"
+                    selected="@(ViewBag.Type == "Safety")">
+                Safety
+            </option>
+
+            <option value="Recall"
+                    selected="@(ViewBag.Type == "Recall")">
+                Recall
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="col">
+
+        <button class="btn btn-primary">
+            Search
+        </button>
+
+    </div>
+
+</form>
+
+<p>@Model.Count result(s)</p>
+
+@foreach (var n in Model)
+{
+    <div class="card mb-2">
+
+        <div class="card-body">
+
+            <h5>@n.Title</h5>
+
+            <p>
+                @n.Device |
+                @n.Type |
+                @n.Date.ToString("yyyy-MM-dd")
+            </p>
+
+            <a asp-controller="NoticeManagement"
+               asp-action="Details"
+               asp-route-id="@n.Id"
+               class="btn btn-outline-primary btn-sm">
+
+                View Details
+
+            </a>
+
+        </div>
+
+    </div>
+}
