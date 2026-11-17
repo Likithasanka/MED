@@ -1,0 +1,65 @@
+﻿@model List<Review>
+@inject MED.Services.MedStore Store
+
+@{
+    ViewData["Title"] = "Selected Notices";
+
+    var notices = Store.Read(d => d.Notices.ToList());
+}
+
+<h2>My Selected Notices</h2>
+
+@foreach (var r in Model)
+{
+    <div class="card mb-3">
+        <div class="card-body">
+
+            <h4>@r.Title</h4>
+
+            @foreach (var id in r.NoticeIds)
+            {
+                var n = notices.FirstOrDefault(x => x.Id == id);
+
+                if (n != null)
+                {
+                    <p>
+                        @n.Title
+
+                        <a asp-controller="Comments"
+                           asp-action="Index"
+                           asp-route-noticeId="@id">
+                            Add Comment
+                        </a>
+
+                        <form asp-action="Remove"
+                              method="post"
+                              class="d-inline">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="reviewId"
+                                   value="@r.Id" />
+
+                            <input type="hidden"
+                                   name="noticeId"
+                                   value="@id" />
+
+                            <button class="btn btn-sm btn-outline-danger">
+                                Remove
+                            </button>
+
+                        </form>
+                    </p>
+                }
+            }
+
+            <a asp-controller="Findings"
+               asp-action="Create"
+               asp-route-reviewId="@r.Id">
+                Save as Finding
+            </a>
+
+        </div>
+    </div>
+}
