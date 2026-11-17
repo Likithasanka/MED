@@ -1,0 +1,28 @@
+﻿@model List<FindingShare>
+
+@{
+    ViewData["Title"] = "Customer Dashboard";
+    var findings = (List<Finding>)ViewBag.Findings;
+}
+
+<h2>Shared Findings</h2>
+
+@foreach (var s in Model)
+{
+    var f = findings.FirstOrDefault(x => x.Id == s.FindingId);
+
+    if (f != null)
+    {
+        <div class="card mb-2">
+            <div class="card-body">
+                <a asp-action="Details" asp-route-id="@s.Id">
+                    @f.Title
+                </a>
+
+                <small>
+                    @s.SharedAt.ToLocalTime()
+                </small>
+            </div>
+        </div>
+    }
+}
