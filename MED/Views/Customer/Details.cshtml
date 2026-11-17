@@ -1,0 +1,97 @@
+﻿@model FindingShare
+@inject MED.Services.MedStore Store
+
+@{
+    ViewData["Title"] = "Shared Finding";
+
+    var f = (Finding?)ViewBag.Finding;
+
+    var r = Store.Read(d =>
+        d.Reviews.FirstOrDefault(x => x.Id == f!.ReviewId));
+
+    var notices = Store.Read(d =>
+        d.Notices.ToList());
+
+    var comments = Store.Read(d =>
+        d.NoticeComments
+            .Where(c => c.EmployeeId == f!.EmployeeId)
+            .ToList());
+
+    var feedback = Store.Read(d =>
+        d.CustomerComments
+            .Where(c => c.ShareId == Model.Id)
+            .ToList());
+}
+
+@if (f != null)
+{
+    <h2>@f.Title</h2>
+
+    <p>@f.Summary</p>
+}
+
+@if (r != null)
+{
+    @foreach (var id in r.NoticeIds)
+    {
+        var n = notices.FirstOrDefault(x => x.Id == id);
+
+        if (n != null)
+        {
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h5>@n.Title</h5>
+
+                    <p>
+                        @n.Device |
+                        @n.Type |
+                        @n.Date.ToString("yyyy-MM-dd")
+                    </p>
+
+                    <p>@n.Description</p>
+
+                    @foreach (var c in comments.Where(c => c.NoticeId == id))
+                    {
+                        <p>
+                            Employee comment: @c.Text
+                        </p>
+                    }
+                </div>
+            </div>
+        }
+    }
+}
+
+<h4>Customer Feedback</h4>
+
+@foreach (var c in feedback)
+{
+    <p>
+        @c.Text
+
+        <small>
+            @c.CreatedAt.ToLocalTime()
+        </small>
+    </p>
+}
+
+<form asp-controller="Feedback"
+      asp-action="Add"
+      method="post">
+
+    @Html.AntiForgeryToken()
+
+    <input type="hidden"
+           name="shareId"
+           value="@Model.Id" />
+
+    <textarea name="text"
+              required
+              maxlength="1000"
+              class="form-control mb-2"></textarea>
+
+    <button class="btn btn-primary">
+        Submit Comment
+    </button>
+</form>
+
